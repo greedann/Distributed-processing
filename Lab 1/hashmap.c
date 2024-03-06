@@ -1,31 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "hashmap.h"
 
-struct HashElement
-{
-    void *key;
-    void *value;
-    struct HashElement *next;
-};
-
-struct HashNode
-{
-    int hash;
-    struct HashElement *element;
-    struct HashNode *next;
-    struct HashNode *prev;
-};
-
-struct HashMap
-{
-    int (*hashfunc)(void *key);
-    int (*comparefunc)(void *key1, void *key2);
-    struct HashNode *firstelement;
-    struct HashNode *lastelement;
-    int size;
-};
-
-struct HashMap *createHashMap(int (*hashfunc)(void *key), int (*comparefunc)(void *key1, void *key2))
+struct HashMap *createHashMap(int (*hashfunc)(key_t key), int (*comparefunc)(key_t key1, key_t key2))
 {
     struct HashMap *map = malloc(sizeof(struct HashMap));
     map->hashfunc = hashfunc;
@@ -36,9 +13,9 @@ struct HashMap *createHashMap(int (*hashfunc)(void *key), int (*comparefunc)(voi
     return map;
 }
 
-void *get(struct HashMap *map, void *key)
+data_t get(struct HashMap *map, key_t key)
 {
-    int hash = map->hashfunc(key);
+    hash_t hash = map->hashfunc(key);
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
@@ -56,16 +33,16 @@ void *get(struct HashMap *map, void *key)
         }
         node = node->next;
     }
-    return NULL;
+    return 0;
 }
 
-void put(struct HashMap *map, void *key, void *value)
+void put(struct HashMap *map, key_t key, data_t value)
 {
-    int hash = map->hashfunc(key);
+    hash_t hash = map->hashfunc(key);
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
-        int compare_result = map->comparefunc((void *)node->hash, (void *)hash);
+        int compare_result = map->comparefunc(node->hash, hash);
         if (compare_result == 0) // hash already exists
         {
             struct HashElement *element = node->element;
@@ -137,9 +114,9 @@ void put(struct HashMap *map, void *key, void *value)
     map->size++;
 }
 
-void erace(struct HashMap *map, void *key)
+void erace(struct HashMap *map, key_t key)
 {
-    int hash = map->hashfunc(key);
+    hash_t hash = map->hashfunc(key);
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
@@ -154,6 +131,26 @@ void erace(struct HashMap *map, void *key)
                     if (prev == NULL)
                     {
                         node->element = element->next;
+                        if (node->element == NULL)
+                        {
+                            if (node->prev != NULL)
+                            {
+                                node->prev->next = node->next;
+                            }
+                            else
+                            {
+                                map->firstelement = node->next;
+                            }
+                            if (node->next != NULL)
+                            {
+                                node->next->prev = node->prev;
+                            }
+                            else
+                            {
+                                map->lastelement = node->prev;
+                            }
+                            free(node);
+                        }
                     }
                     else
                     {
@@ -195,7 +192,6 @@ void printHashMap(struct HashMap *map)
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
-        // printf("hash: %d\n", node->hash);
         struct HashElement *element = node->element;
         while (element != NULL)
         {
