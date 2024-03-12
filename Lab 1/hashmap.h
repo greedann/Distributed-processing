@@ -1,20 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int hash_t;
-typedef int data_t;
-typedef int key_t;
-
 struct HashElement
 {
-    key_t key;
-    data_t value;
+    void *key;
+    void *value;
     struct HashElement *next;
 };
 
 struct HashNode
 {
-    hash_t hash;
+    void *hash;
     struct HashElement *element;
     struct HashNode *next;
     struct HashNode *prev;
@@ -22,20 +18,20 @@ struct HashNode
 
 struct HashMap
 {
-    int (*hashfunc)(key_t key);
-    int (*comparefunc)(key_t key1, key_t key2);
+    void *(*hashfunc)(void *key);
+    int (*comparefunc)(void *key1, void *key2);
     struct HashNode *firstelement;
     struct HashNode *lastelement;
     int size;
 };
 
-struct HashMap *createHashMap(hash_t (*hashfunc)(key_t key), int (*comparefunc)(key_t key1, key_t key2));
+struct HashMap *createHashMap(void *(*hashfunc)(void *key), int (*comparefunc)(void *key1, void *key2));
 
-data_t get(struct HashMap *map, key_t key);
+void *get(struct HashMap *map, void *key);
 
-void put(struct HashMap *map, key_t key, data_t value);
+void put(struct HashMap *map, void *key, void *value);
 
-void erace(struct HashMap *map, key_t key);
+void erace(struct HashMap *map, void *key);
 
 void deleteHashMap(struct HashMap *map);
 

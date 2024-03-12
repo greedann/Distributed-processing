@@ -2,26 +2,31 @@
 #include <stdlib.h>
 #include "hashmap.h"
 
-hash_t hashfunc(key_t key)
+void * hashfunc(void *  key)
 {
-    return (hash_t)key;
+    return (void * )key;
 }
 
-int comparefunc(key_t key1, key_t key2)
+int comparefunc(void *  key1, void *  key2)
 {
     return (int)key1 - (int)key2;
 }
 
 int main(int argc, char **argv)
 {
+    int *arr = malloc(sizeof(int)*5);
+    for (int i = 0; i < 5; i++)
+    {
+        arr[i] = i+1;
+    }
     struct HashMap *map = createHashMap(hashfunc, comparefunc);
-    put(map, (key_t)1, (data_t)1);
-    put(map, (key_t)2, (data_t)2);
-    put(map, (key_t)3, (data_t)3);
-    put(map, (key_t)4, (data_t)4);
-    printHashMap(map);
 
-    erace(map, (key_t)2);
+    put(map, (void *)1, (void *)2);
+    put(map, (void *)2, (void *)3);
+    put(map, (void *)3, (void *)4);
+    put(map, (void *)4, (void *)5);
+    put(map, (void *)5, (void *)6);
+
     printHashMap(map);
 
     deleteHashMap(map);

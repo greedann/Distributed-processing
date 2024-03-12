@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "hashmap.h"
 
-struct HashMap *createHashMap(int (*hashfunc)(key_t key), int (*comparefunc)(key_t key1, key_t key2))
+struct HashMap *createHashMap(void *(*hashfunc)(void *key), int (*comparefunc)(void *key1, void *key2))
 {
     struct HashMap *map = malloc(sizeof(struct HashMap));
     map->hashfunc = hashfunc;
@@ -13,9 +13,9 @@ struct HashMap *createHashMap(int (*hashfunc)(key_t key), int (*comparefunc)(key
     return map;
 }
 
-data_t get(struct HashMap *map, key_t key)
+void *get(struct HashMap *map, void *key)
 {
-    hash_t hash = map->hashfunc(key);
+    void *hash = map->hashfunc(key);
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
@@ -36,9 +36,9 @@ data_t get(struct HashMap *map, key_t key)
     return 0;
 }
 
-void put(struct HashMap *map, key_t key, data_t value)
+void put(struct HashMap *map, void *key, void *value)
 {
-    hash_t hash = map->hashfunc(key);
+    void *hash = map->hashfunc(key);
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
@@ -114,9 +114,9 @@ void put(struct HashMap *map, key_t key, data_t value)
     map->size++;
 }
 
-void erace(struct HashMap *map, key_t key)
+void erace(struct HashMap *map, void *key)
 {
-    hash_t hash = map->hashfunc(key);
+    void *hash = map->hashfunc(key);
     struct HashNode *node = map->firstelement;
     while (node != NULL)
     {
@@ -195,7 +195,7 @@ void printHashMap(struct HashMap *map)
         struct HashElement *element = node->element;
         while (element != NULL)
         {
-            printf("key: %d, value: %d\n", (int)element->key, (int)element->value);
+            printf("key: %d, value: %d\n", (int)element->key, (int*)element->value);
             element = element->next;
         }
         node = node->next;
