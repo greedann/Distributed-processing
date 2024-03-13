@@ -65,8 +65,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# add hashmap.a, hashmap.o, lib_functions.so, main.o to exclude list
-!lib_hashmap.a
-!hashmap.o
-!lib_hashmap.so
-!main.o
+Lab 2/main
+Lab 2/program_static
+Lab 2/program_dynamic

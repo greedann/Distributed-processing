@@ -1,0 +1,25 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build momolitic",
+            "type": "shell",
+            "command": "gcc -Wall -c hashmap.c -o ./build/hashmap.o && gcc -Wall -c main.c -o ./build/main.o && gcc -Wall ./build/hashmap.o ./build/main.o -o main",
+            "problemMatcher": []
+        },
+        {
+            "label": "static library",
+            "type": "shell",
+            "command": "ar -r ./build/libhashmap.a ./build/hashmap.o && gcc ./build/main.o ./build/libhashmap.a -o program_static",
+            "problemMatcher": []
+        },
+        {
+            "label": "dynamic library",
+            "type": "shell",
+            "command": "gcc -Wall -fPIC -c hashmap.c -o ./build/hashmap.o && gcc ./build/hashmap.o -shared -o ./build/libhashmap.so && gcc ./build/main.o -L. ./build/libhashmap.so -o program_dynamic && export LD_LIBRARY_PATH=.:\"$LD_LIBRARY_PATH\"",
+            "problemMatcher": []
+        },
+    ]
+}
