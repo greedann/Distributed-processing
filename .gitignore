@@ -68,3 +68,8 @@ dkms.conf
 Lab 2/main
 Lab 2/program_static
 Lab 2/program_dynamic
+
+!Lab 3/libpqueue.a
+!Lab 3/libpqueue.so
+Lab 3/main
+Lab 3/queue.dat
