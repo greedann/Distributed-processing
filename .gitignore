@@ -76,3 +76,6 @@ Lab 3/queue.dat
 
 .vs/
 x64/
+
+# Java
+*.class
